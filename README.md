@@ -17,13 +17,13 @@ Library Information
 	and must be found durning this plugin initialization process.
 
 	Locating "7z.so" library file:
-	1. Symlink or file itself in same dir "p7z_usr.so" is in.
-	2. Enviroment variable P7ZUSRWCX_7Z_SO_FILE set to path to it,
+	1. File in the same dir "p7z_usr.wcx" is in.
+	2. Enviroment variable P7ZUSRWCX_7Z_SO_FILE containing full path,
 	   Ex: "$> export P7ZUSRWCX_7Z_SO_FILE=/path/to/7z.so"
 	
-	Recomended is symlink or path via enviroment variable. 
-	Please avoid keeping multiple copies of "7z.so" in the system.
-
+	Recomended is #1, that is, keep compatible "7z.so" file in the same 
+	directory "p7z_usr.wcx" is in.
+	
 
 Build Instructions
 -------------------------------
@@ -46,11 +46,14 @@ Installation
 		
 		* main plugin file: "p7z_usr.wcx".
 		* configuration file: "p7z_usr.ini" (optional).
+		* main P7ZIP library file, "7z.so" (or symlink to the file).
 
-	Make sure "7z.so" can be located either by creating symlink or by providing 
-	enviroment variable that gets assigned before DCMD is started.
-	Please see the "Library Information" section.
-	Default location is same directory "p7z_usr.wcx" is in, in this case:
+	Make sure "7z.so" library can be located by P7z Usr library
+	in case if using symlink instead of reular file.
+
+
+	Default location for "7z.so" is the same directory "p7z_usr.wcx" is in, 
+	in this case:
 		"./plugins/wcx/p7z_usr/7z.so"
 
 	In DCMD go to Options then Plugins. In Packer Plugin tab, click 
@@ -60,15 +63,15 @@ Installation
 	Notes:
 	* this is a read-only plugin, omitting types supported by other dedicated 
 	  plugins is recommended.
-	* list of file types supported is long, direct DCMD configuration file
-	  editing may be a better approach.
+	* list of file types supported is long, direct editing of DCMD configuration file
+	  may be a better approach.
 	
 
 Formats and suffix list sample
 -----------------------------------------
 	Below is a dump of formats from "7z.so" version 15.09.
 	Actual list is written to the console STDOUT on plugin initialization with debug mode on.
-	More descriptive can be found in an official 7-Zip documentation.
+	More descriptive list can be found in an official 7-Zip documentation.
 
 		7z:       [7z; ]
 		APM:      [apm; ]
@@ -130,6 +133,7 @@ Features and Limitations
 ---------------------------------
 	[+] can browse or extract all archives 7-zip library can open.
 	[+] configuration via INI file (documentation provided inside it).
+	[+] should be forward compatible with P7ZIP libraries versions >= 15.09
 	[-] read only
 	[-] multi volume archives not supported
 	[-] no file dates and attributes
@@ -152,7 +156,7 @@ FAQ
 	Q: How to build "7z.so"?
 	A:
 		See BUILD section in the README file of the P7ZIP.
-		You can try "make 7z" command and if successfull, "7z.so"
+		You can try the "make 7z" command, and if successfull, "7z.so"
 		will be created in "./bin" subdirectory.
 
 	Q: What is a Handler?
@@ -173,7 +177,7 @@ FAQ
 			$> export P7ZUSRWCX_DEBUG=1
 		This causes various debug messages to be printed to the console STDOUT.
 		Use Ctrl+PgDn, the "Try open archive" in DCMD, and
-		find which (if any) handler tried is last in the incomplete list.
+		find which (if any) handler tried comes as last in the incomplete list.
 
 
 Links
@@ -193,11 +197,23 @@ Changelog
 	v 0.2
 		* Ask password for password protected archives.
 		* Show message box on unpacking error durning close-archive call.
-		* New INI optional configurations
-		* Source code file names re-arrangemed.
+		* New INI optional configurations.
+		* Source code file names rearrangement.
 		* About box.
 	
 	v 0.3
 		* Fixed major error on symbolic links processing.
 		* New INI configuration: custom shell command on archive open.
 		* Readme file updates.
+
+	v 0.4
+		* Loading of "7z.so" library from path that contains unicode characters 
+		  should now work (Fix).
+		* Critical error messages on "7z.so" loading, in DCMD, now show 
+		  errors in the message-box before terminating the application.
+		* Minor changes in the way how to turn on debug mode using the INI configuration.
+		* Changed how "7z.so" library is loaded.
+		* Removed unnecessary code assertions.
+		* Readme file updates.
+
+
