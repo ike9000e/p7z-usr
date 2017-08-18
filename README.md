@@ -189,31 +189,5 @@ Links
 	http://ikk.byethost9.com/
 
 
-Changelog
----------------
-	v 0.1
-		* first release.
-	
-	v 0.2
-		* Ask password for password protected archives.
-		* Show message box on unpacking error durning close-archive call.
-		* New INI optional configurations.
-		* Source code file names rearrangement.
-		* About box.
-	
-	v 0.3
-		* Fixed major error on symbolic links processing.
-		* New INI configuration: custom shell command on archive open.
-		* Readme file updates.
-
-	v 0.4
-		* Loading of "7z.so" library from path that contains unicode characters 
-		  should now work (Fix).
-		* Critical error messages on "7z.so" loading, in DCMD, now show 
-		  errors in the message-box before terminating the application.
-		* Minor changes in the way how to turn on debug mode using the INI configuration.
-		* Changed how "7z.so" library is loaded.
-		* Removed unnecessary code assertions.
-		* Readme file updates.
 
 
