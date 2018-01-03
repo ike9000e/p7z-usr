@@ -1,5 +1,4 @@
 # p7z-usr
-
 -------------------------------------------------------
     P7Z Usr - Packer Plugin for DCMD on Linux
 -------------------------------------------------------
@@ -29,43 +28,47 @@ Build Instructions
 -------------------------------
 	1. Unpack main P7Z Usr package file ("p7z_usr_xxxxx.zip") into selected directory.
 	2. Download P7ZIP version 15.09. Website: http://p7zip.sourceforge.net/
-	3. Unpack P7ZIP into "./p7zip/p7zip_15x09", subdirectory of P7Z Usr.
+	3. Unpack P7ZIP into "./p7zip/compatible_version", subdirectory of P7Z Usr.
 	   (Actually only ./CPP and ./C subdirectories are required for build process).
 	4. Locate the "makefile" file in "./projects/01_shared_lib" subdir.
 	5. Use this command to compile and build: "make release".
-	6. On successful build, shared lib file "p7z_usr.wcx" will be
+	   (Note: the 'debug' build target is just a placeholder and currently has no use).
+	6. On successful build, shared library file "p7z_usr.wcx" will be
 	   creared in "./projects/01_shared_lib/bin/Release".
 
 
 Installation
 --------------------
+	No special steps required, instructions below just follow standard 
+	steps as if to install any other WCX plugin in DCMD.
+
 	Typically, creeate following new subdir under DCMD root directory:
 			"./plugins/wcx/p7z_usr"
 	
-	Copy following files to it:
+	Copy following files into it:
 		
 		* main plugin file: "p7z_usr.wcx".
 		* configuration file: "p7z_usr.ini" (optional).
 		* main P7ZIP library file, "7z.so" (or symlink to the file).
 
-	Make sure "7z.so" library can be located by P7z Usr library
-	in case if using symlink instead of reular file.
-
+	Make sure "7z.so" library can be located by P7z Usr library,
+	in case if using symlink instead of regular file.
 
 	Default location for "7z.so" is the same directory "p7z_usr.wcx" is in, 
 	in this case:
 		"./plugins/wcx/p7z_usr/7z.so"
 
-	In DCMD go to Options then Plugins. In Packer Plugin tab, click 
+	In DCMD go to Options then Plugins. In Packer Plugin tab click 
 	the "Add" button and select the "p7z_usr.wcx" file.
 	In the "Tweak" dialog box, add the file extensions of file types for this plugin 
 	to open, see handlers list below. 
+	
 	Notes:
-	* this is a read-only plugin, omitting types supported by other dedicated 
+	* this is a read-only plugin, omitting types supported by other, archive dedicated,
 	  plugins is recommended.
 	* list of file types supported is long, direct editing of DCMD configuration file
 	  may be a better approach.
-	
+
 
 Formats and suffix list sample
 -----------------------------------------
@@ -136,8 +139,8 @@ Features and Limitations
 	[+] should be forward compatible with P7ZIP libraries versions >= 15.09
 	[-] read only
 	[-] multi volume archives not supported
-	[-] no file dates and attributes
-	[-] no Rar5 (can only see what files are in archive)
+	[-] no file attributes
+	[-] no Rar5 (can only see files are in the archive)
 
 
 FAQ
@@ -179,15 +182,43 @@ FAQ
 		Use Ctrl+PgDn, the "Try open archive" in DCMD, and
 		find which (if any) handler tried comes as last in the incomplete list.
 
+	Q: Why opening certain MSI archive file using Ctrl+PgDn yields
+	   contents of some CAB archive embeded inside it, rather
+	   than contents of MSI file itself?
+	A:
+		Opening files using Ctrl+PgDn is a method
+		that tries handlers in predefined order, that does not take file 
+		extension into account.
+		The algorithm looks at the begining of the archive file, from adderss 0 up to 
+		value specified by 'uCYHTFScanSize', and employs first handler that it finds
+		suitable. Because list of handlers is orgainzed in an arbitrary order,
+		it may happen that 'Cab' handler is tried before 'Compound' handler.
+		Finally, if CAB file in question is embeded within first 8000002 bytes of the 
+		archive file, the whole archive file gets "prematurely" opened as 'Cab' archive.
+		
+		In short:
+		* in handlers priority list 'Cab' handler appears before 'Compound' (MSI) handler.
+		* CAB file is embeded within first 8000002 bytes of the MSI file.
+
+		Solution 1:
+		Edit handlers priority list and put 'Compound' before 'Cab'.
+		
+		Solution 2:
+		Do not use Ctrl+PgDn on the MSI archive file in question.
+		Make sure file extension "msi" is added in the plugin configuration, 
+		the 'Tweak' button in the DCMD Options in the Plugins section.
+		Open MSI archive regural way, using Double-click or Enter key.
+
+		References:
+		* 'uCYHTFScanSize' default value is 8000002.
+		* handlers priority list can be changed using 'szCYHTFHandlersPriority'.
 
 Links
 -------------------
+	https://github.com/ikk00/p7z-usr
 	http://doublecmd.sourceforge.net/
 	http://doublecmd.sourceforge.net/forum/
 	http://p7zip.sourceforge.net/
 	http://www.7-zip.org/
 	http://ikk.byethost9.com/
-
-
-
 
