@@ -6,7 +6,7 @@
 
 	Plugin for Double Commander (DCMD) that provides 7-Zip file archiver features.
 	Open source, intended for Linux platforms.
-	It's nain module is P7ZIP, a port of 7-Zip for POSIX systems.
+	Its nain module is P7ZIP, a port of 7-Zip for POSIX systems.
 
 
 Library Information
